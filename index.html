@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NIFTY TERMINAL | Mobile Defense Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-base: #0a0d14;
+            --bg-card: #121722;
+            --border: #1e2638;
+            --text-main: #e2e8f0;
+            --text-muted: #64748b;
+            --green: #10b981;
+            --red: #ef4444;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            padding: 12px;
+            font-size: 14px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+        .logo { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 16px; color: var(--blue); }
+        .market-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+        .section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin: 14px 4px 8px;
+            font-weight: 700;
+        }
+        .shields-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .shield-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .shield-name { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+        .shield-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; }
+        .status-ok { color: var(--green); }
+
+        .trade-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+        }
+        .trade-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .symbol { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 800; }
+        .badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; }
+        .badge-paper { background: #312e81; color: #a5b4fc; }
+        .grid-data {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            text-align: center;
+            background: #0d111a;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .grid-label { font-size: 10px; color: var(--text-muted); margin-bottom: 2px; }
+        .footer-bar {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">⚡ NIFTY-TERMINAL</div>
+        <div class="market-badge" id="liveClock">LIVE NSE/BSE</div>
+    </div>
+
+    <div class="section-title">DEFENSE SHIELDS (4-TIER RISK)</div>
+    <div class="shields-grid">
+        <div class="shield-card">
+            <div class="shield-name">Shield 0: Portfolio Heat</div>
+            <div class="shield-val status-ok">Max 2.0% Risk / No Collision</div>
+        </div>
+        <div class="shield-card">
+            <div class="shield-name">Shield 1: NIFTY Regime</div>
+            <div class="shield-val status-ok">> 20-SMA Guard Active</div>
+        </div>
+        <div class="shield-card">
+            <div class="shield-name">Shield 2: Liquidity</div>
+            <div class="shield-val status-ok">> ₹10 Cr / Bands Clean</div>
+        </div>
+        <div class="shield-card">
+            <div class="shield-name">Shield 3: Breakeven</div>
+            <div class="shield-val status-ok">+1R Zero Risk Lock</div>
+        </div>
+    </div>
+
+    <div class="section-title">ACTIVE POSITIONS & LEDGER</div>
+    <div id="positionsContainer">
+        <div class="trade-card">
+            <div class="trade-header">
+                <span class="symbol">TATAMOTORS</span>
+                <span class="badge badge-paper">PAPER (CNC)</span>
+            </div>
+            <div class="grid-data">
+                <div>
+                    <div class="grid-label">ENTRY</div>
+                    <div>₹960.50</div>
+                </div>
+                <div>
+                    <div class="grid-label">STOP (ATR)</div>
+                    <div style="color:var(--yellow)">₹942.10</div>
+                </div>
+                <div>
+                    <div class="grid-label">TARGET</div>
+                    <div style="color:var(--green)">₹997.30</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bar">
+        Engine: Autonomous GitHub Cloud Pipeline<br>
+        Monotonic Chandelier Ratchet @ 15:45 IST
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveClock').innerText = now.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST';
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        fetch('./data.json')
+            .then(res => res.json())
+            .then(data => {
+                if(data && data.trades && data.trades.length > 0) {
+                    const container = document.getElementById('positionsContainer');
+                    container.innerHTML = '';
+                    data.trades.forEach(t => {
+                        container.innerHTML += `
+                            <div class="trade-card">
+                                <div class="trade-header">
+                                    <span class="symbol">${t.symbol}</span>
+                                    <span class="badge badge-paper">${t.is_paper ? 'PAPER' : 'LIVE'} (${t.broker})</span>
+                                </div>
+                                <div class="grid-data">
+                                    <div><div class="grid-label">ENTRY</div><div>₹${t.entry_price}</div></div>
+                                    <div><div class="grid-label">CURRENT STOP</div><div style="color:var(--yellow)">₹${t.current_stop}</div></div>
+                                    <div><div class="grid-label">TARGET</div><div style="color:var(--green)">₹${t.target_price}</div></div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+            }).catch(() => console.log('Static preview mode active'));
+    </script>
+</body>
+</html>
