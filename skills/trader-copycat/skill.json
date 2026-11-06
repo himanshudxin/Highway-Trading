@@ -1,0 +1,1 @@
+{"name": "trader-copycat", "command": "python3 skills/trader-copycat/copycat_india.py {symbol}"}

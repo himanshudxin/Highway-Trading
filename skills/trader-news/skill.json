@@ -1,0 +1,1 @@
+{"name": "trader-news", "command": "python3 skills/trader-news/nse_announcements.py {symbol}"}

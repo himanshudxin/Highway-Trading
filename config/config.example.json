@@ -1,0 +1,11 @@
+{
+  "market": "NSE",
+  "currency": "INR",
+  "risk_parameters": {
+    "account_capital_inr": 100000.0,
+    "max_risk_per_trade_pct": 1.0,
+    "atr_stop_multiplier": 2.0,
+    "target_risk_reward_ratio": 2.0,
+    "trailing_stop_multiplier": 2.5
+  }
+}
