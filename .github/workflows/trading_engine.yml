@@ -1,0 +1,94 @@
+name: Highway-Trading Engine
+
+on:
+  schedule:
+    # 08:45 AM IST (03:15 UTC) - Mon-Fri: Morning Session & Pre-Market Auth
+    - cron: '15 3 * * 1-5'
+    # 15:45 PM IST (10:15 UTC) - Mon-Fri: Post-Market Trailing Stop & GTT Ratchet
+    - cron: '15 10 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Select Action to Run'
+        required: true
+        default: 'dry_run'
+        type: choice
+        options:
+          - dry_run
+          - morning_auth
+          - evening_sync
+          - full_scan
+
+permissions:
+  contents: write
+
+jobs:
+  run-engine:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Restore SQLite Database State
+        run: |
+          mkdir -p ~/
+          if [ -f "./highway_trading.db" ]; then
+            cp ./highway_trading.db ~/highway_trading.db
+          fi
+
+      - name: Execute Trading Action
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          ACTION="${{ github.event.inputs.action }}"
+          
+          # Default to scheduled behavior if triggered by cron
+          if [ -z "$ACTION" ]; then
+            HOUR=$(date -u +%H)
+            if [ "$HOUR" -lt 6 ]; then
+              ACTION="morning_auth"
+            else
+              ACTION="evening_sync"
+            fi
+          fi
+
+          echo "Executing task: $ACTION"
+
+          case "$ACTION" in
+            dry_run)
+              python3 -c "from core.execution_engine import ExecutionEngine; ExecutionEngine(is_paper=True).execute_entry('TATAMOTORS')"
+              ;;
+            morning_auth)
+              python3 -c "print('Morning pre-flight and risk checks initiated.')"
+              python3 -c "from core.regime_filter import check_market_regime; print(check_market_regime())"
+              ;;
+            evening_sync)
+              python3 -c "from core.execution_engine import ExecutionEngine; ExecutionEngine().run_post_market_sync()"
+              ;;
+            full_scan)
+              python3 -c "from core.execution_engine import ExecutionEngine; e = ExecutionEngine(is_paper=True); [e.execute_entry(sym) for sym in ['TATAMOTORS', 'RELIANCE', 'INFY']]"
+              ;;
+          esac
+
+      - name: Persist SQLite Ledger
+        run: |
+          if [ -f ~/highway_trading.db ]; then
+            cp ~/highway_trading.db ./highway_trading.db
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add highway_trading.db
+            git commit -m "chore: persist trade ledger state [skip ci]" || echo "No ledger changes to commit"
+            git push origin main || echo "No changes pushed"
+          fi
